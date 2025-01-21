@@ -1,6 +1,18 @@
 # UC3-P.I-
-## Nome do Projeto 🏢
-CondomínioX
+## Nome do Projeto 🏢  
+**CondomínioX**  
+
+## Status do Projeto 📌  
+🚧 Em desenvolvimento 🚧  
+
+## Objetivo do Projeto 🎯  
+Este software visa facilitar a gestão de condomínios, promovendo uma comunicação eficiente entre moradores, síndicos e administradores. Ele busca automatizar processos como cobranças, gestão de assembleias e solicitações.  
+
+## Tecnologias Utilizadas 💻  
+- Java  
+- MySQL  
+- Swing (GUI)  
+- JDBC  
 
 ## Descrição 📋
 Este projeto é um sistema informatizado para a gestão de condomínios, desenvolvido em Java com MySQL para persistência de dados. Ele permite funcionalidades como:
@@ -39,13 +51,6 @@ Inclui tabelas para gerenciamento de categorias, subcategorias, períodos, orça
       FOREIGN KEY (idCondominio) REFERENCES Condominios(idCondominio)
     );
 
-## Tecnologias Utilizadas 💻
-
-    Java
-    MySQL
-    Swing (GUI)
-    JDBC
-
 ## Wireframes 📐
 
 ## Como Executar 🚀
@@ -54,3 +59,4 @@ Inclui tabelas para gerenciamento de categorias, subcategorias, períodos, orça
 
     Desenvolvido por: Ana Beatriz Loureiro
 
+![image](https://github.com/user-attachments/assets/d26a2b2b-a31e-4226-b5a8-d4940a710788)
