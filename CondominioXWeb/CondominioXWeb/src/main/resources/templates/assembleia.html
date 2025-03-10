@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Condomínio X - Assembleia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    .table-container {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    .table-selected {
+      background-color: #d1ecf1;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container-fluid">
+    <!-- Cabeçalho -->
+    <div class="row mt-4">
+      <div class="col text-center">
+        <h1 class="display-1 fw-light">Condomínio X</h1>
+      </div>
+    </div>
+    <!-- Títulos -->
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h3 class="text-center">DATAS DA ASSEMBLEIA</h3>
+      </div>
+      <div class="col-md-6">
+        <h3 class="text-center">ATA DA ASSEMBLEIA</h3>
+      </div>
+    </div>
+    <!-- Tabelas Lado a Lado -->
+    <div class="row">
+      <!-- Tabela de Datas -->
+      <div class="col-md-6">
+        <div class="table-responsive table-container">
+          <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>DATA</th>
+              </tr>
+            </thead>
+            <tbody id="datasTable">
+              <tr th:each="data : ${datas}" onclick="selectDate(this, '[[${data}]]')">
+                <td th:text="${data}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center mt-3">
+          <button id="btnSelecionar" class="btn btn-primary btn-lg" onclick="selecionarData()">SELECIONAR</button>
+        </div>
+      </div>
+      <!-- Tabela de Ata -->
+      <div class="col-md-6">
+        <div class="table-responsive table-container">
+          <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>Id</th>
+                <th>Morador</th>
+              </tr>
+            </thead>
+            <tbody id="ataTable">
+              <tr>
+                <td colspan="2" class="text-center">Selecione uma data para ver a ata.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center mt-3">
+          <a class="btn btn-secondary btn-lg px-5" th:href="@{/selecao}">
+            Voltar
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- JavaScript para AJAX -->
+  <script>
+    var selectedDate = null;
+    function selectDate(row, data) {
+      document.querySelectorAll('#datasTable tr').forEach(function(r) {
+        r.classList.remove('table-selected');
+      });
+      row.classList.add('table-selected');
+      selectedDate = data;
+    }
+    function selecionarData() {
+      if (!selectedDate) {
+        alert('Selecione uma data na tabela para continuar.');
+        return;
+      }
+      fetch(`/api/assembleia/ata?data=${selectedDate}`)
+        .then(response => response.json())
+        .then(data => {
+          var ataTable = document.getElementById('ataTable');
+          ataTable.innerHTML = '';
+          if (data.length === 0) {
+            ataTable.innerHTML = '<tr><td colspan="2" class="text-center">Nenhum morador encontrado para a data selecionada.</td></tr>';
+          } else {
+            data.forEach(function(item) {
+              var tr = document.createElement('tr');
+              var tdId = document.createElement('td');
+              tdId.textContent = item.id;
+              var tdMorador = document.createElement('td');
+              tdMorador.textContent = item.morador;
+              tr.appendChild(tdId);
+              tr.appendChild(tdMorador);
+              ataTable.appendChild(tr);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar a ata:', error);
+          alert('Erro ao carregar a ata.');
+        });
+    }
+  </script>
+</body>
+</html>

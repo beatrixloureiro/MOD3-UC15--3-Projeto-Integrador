@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Condomínio X - Solicitações</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .title {
+      font-size: 4rem;
+      font-family: 'Segoe UI Light', sans-serif;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .sub-title {
+      font-size: 1.75rem;
+      color: rgb(153, 51, 0);
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    .register-btn {
+      font-size: 1.5rem;
+      font-family: Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container">
+    <!-- Cabeçalho -->
+    <div class="row">
+      <div class="col">
+        <h1 class="title">Condomínio X</h1>
+      </div>
+    </div>
+    <!-- Subtítulo -->
+    <div class="row">
+      <div class="col">
+        <h3 class="sub-title">Faça sua Solicitação ao Síndico</h3>
+      </div>
+    </div>
+    <!-- Formulário de Solicitação -->
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form th:action="@{/solicitacao/enviar}" method="post">
+          <div class="mb-3">
+            <label for="tipoSolicitacao" class="form-label">Tipo de Solicitação</label>
+            <select id="tipoSolicitacao" name="tipoSolicitacao" class="form-select" required>
+              <option value="Manutenção">Manutenção</option>
+              <option value="Documentos">Documentos</option>
+              <option value="Diversos">Diversos</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <textarea id="descricao" name="descricao" class="form-control" rows="5" placeholder="Digite sua solicitação aqui..." required></textarea>
+          </div>
+          <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary register-btn">REGISTRAR</button>
+          </div>
+          <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+        </form>
+      </div>
+    </div>
+    <!-- Lista de Solicitações Enviadas -->
+    <div class="row mt-5">
+      <div class="col">
+        <h3 class="text-center">Solicitações Enviadas</h3>
+        <table class="table table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Descrição</th>
+              <th>Status</th>
+              <th>Data de Envio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="solicitacao : ${solicitacoes}">
+              <td th:text="${solicitacao.id}"></td>
+              <td th:text="${solicitacao.titulo}"></td>
+              <td th:text="${solicitacao.descricao}"></td>
+              <td th:text="${solicitacao.atendido ? 'Atendido' : 'Pendente'}"></td>
+              <td th:text="${solicitacao.dataEnvio}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(solicitacoes)}">
+              <td colspan="5" class="text-center">Nenhuma solicitação encontrada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Botão de Retorno -->
+    <div class="row">
+      <div class="col text-center mt-3">
+        <a class="btn btn-secondary btn-lg px-5" th:href="@{/selecao}">
+          Voltar
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
