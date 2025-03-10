@@ -40,22 +40,21 @@ public class LoginController {
         // Comparação da senha (pode usar trim() ou equalsIgnoreCase se necessário)
         if (usuario != null && usuario.getSenha().trim().equals(senha.trim())) {
             session.setAttribute("usuarioLogado", usuario);
-            
-            
-            String mensagem;
-                if (usuario.getTipoUsuario().equalsIgnoreCase("Morador")) {
-                    mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Morador.";
-                        } else if (usuario.getTipoUsuario().equalsIgnoreCase("Síndico")) {
-                    mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Síndico.";
-                        } else if (usuario.getTipoUsuario().equalsIgnoreCase("Administrador")) {
-                    mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Administrador.";
-                        } else {
-                    mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ".";
-                    }
-                        session.setAttribute("mensagemBoasVindas", mensagem);
     
-            
-            return "redirect:/selecao";
+            String mensagem;
+            if (usuario.getTipoUsuario().equalsIgnoreCase("Morador")) {
+                mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Morador.";
+            } else if (usuario.getTipoUsuario().equalsIgnoreCase("Síndico")) {
+                mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Síndico.";
+            } else if (usuario.getTipoUsuario().equalsIgnoreCase("Administrador")) {
+                mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ", você tem a permissão de Administrador.";
+            } else {
+                mensagem = "Bem-vindo " + usuario.getNomeUsuario() + ".";
+            }
+            // Armazena a mensagem de boas-vindas na sessão
+            session.setAttribute("mensagemBoasVindas", mensagem);
+
+            return "boasVindas"; // nova view que mostra o modal
         } else {
             model.addAttribute("erro", "Usuário ou senha inválidos.");
             return "login";
