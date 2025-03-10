@@ -1,38 +1,31 @@
--- Triggers para a tabela Morador --
+-- Triggers para inserção automática nas tabelas derivadas
 DELIMITER //
 
+-- Trigger para a tabela Morador
 CREATE TRIGGER after_insert_usuario_morador
 AFTER INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     IF NEW.tipoUsuario = 'Morador' THEN
         INSERT INTO Morador (id, nomeUsuario, unidade, bloco)
-        VALUES (NEW.id, NEW.nomeUsuario, NULL, NULL);  -- Ajuste 'unidade' e 'bloco' conforme necessário --
+        VALUES (NEW.id, NEW.nomeUsuario, 'Exemplo Unidade', 'A');  -- Substitua 'Exemplo Unidade' e 'A' conforme necessário
     END IF;
 END;
 //
 
-DELIMITER ;
-
--- Triggers para a tabela Administrador
-DELIMITER //
-
+-- Trigger para a tabela Administrador
 CREATE TRIGGER after_insert_usuario_administrador
 AFTER INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     IF NEW.tipoUsuario = 'Administrador' THEN
         INSERT INTO Administrador (id, nomeUsuario, cargo)
-        VALUES (NEW.id, NEW.nomeUsuario, NULL);  -- Ajuste 'cargo' conforme necessário
+        VALUES (NEW.id, NEW.nomeUsuario, 'Exemplo Cargo');  -- Substitua 'Exemplo Cargo' conforme necessário
     END IF;
 END;
 //
 
-DELIMITER ;
-
--- Triggers para a tabela Síndico
-DELIMITER //
-
+-- Trigger para a tabela Sindico
 CREATE TRIGGER after_insert_usuario_sindico
 AFTER INSERT ON Usuario
 FOR EACH ROW
@@ -46,8 +39,6 @@ END;
 
 DELIMITER ;
 
--- Triggers para a tabela Reserva
--- Trigger para inserção na tabela Reserva
 DELIMITER //
 
 CREATE TRIGGER before_insert_reserva
@@ -72,8 +63,6 @@ END;
 //
 
 DELIMITER ;
-
--- Trigger para atualização na tabela Reserva --
 DELIMITER //
 
 CREATE TRIGGER before_update_reserva
@@ -99,16 +88,68 @@ END;
 //
 
 DELIMITER ;
-
--- Trigger para exclusão na tabela Reserva --
 DELIMITER //
 
 CREATE TRIGGER after_delete_reserva
 AFTER DELETE ON Reserva
 FOR EACH ROW
 BEGIN
-   
+    -- Aqui você pode adicionar ações adicionais após a exclusão, se necessário
+    -- Exemplo: Adicionar um registro de log ou liberar recursos
 END;
 //
+DELIMITER ;
+DELIMITER //
 
+CREATE TRIGGER after_insert_financeiro
+AFTER INSERT ON Financeiro
+FOR EACH ROW
+BEGIN
+    DECLARE v_count INT DEFAULT 0;
+    DECLARE v_mes DATE;
+
+    -- Define o mês de referência como o primeiro dia do mês da data_custo
+    SET v_mes = DATE_FORMAT(NEW.data_custo, '%Y-%m-01');
+
+    -- Verifica se já existe um registro em Relatorio para esse mês
+    SELECT COUNT(*) INTO v_count FROM Relatorio WHERE mes_referencia = v_mes;
+
+    IF v_count > 0 THEN
+        -- Atualiza o registro existente. 
+        -- Se você quiser distinguir entre custo e receita, adicione uma condição baseada em NEW.categoria.
+        UPDATE Relatorio
+        SET total_custos = total_custos + NEW.valor
+        WHERE mes_referencia = v_mes;
+    ELSE
+        -- Insere um novo registro para o mês, com total_custos = NEW.valor e total_rendimentos = 0
+        INSERT INTO Relatorio (mes_referencia, total_custos, total_rendimentos)
+        VALUES (v_mes, NEW.valor, 0.00);
+    END IF;
+END;
+//
+DELIMITER ;
+DELIMITER //
+CREATE TRIGGER after_insert_cobranca
+AFTER INSERT ON Cobranca
+FOR EACH ROW
+BEGIN
+    DECLARE v_count INT DEFAULT 0;
+    DECLARE v_mes DATE;
+    
+    SET v_mes = NEW.mes_referencia;
+    
+    SELECT COUNT(*) INTO v_count
+      FROM Relatorio
+     WHERE mes_referencia = v_mes;
+    
+    IF v_count > 0 THEN
+        UPDATE Relatorio
+        SET total_rendimentos = total_rendimentos + NEW.valor_total
+        WHERE mes_referencia = v_mes;
+    ELSE
+        INSERT INTO Relatorio (mes_referencia, total_custos, total_rendimentos)
+        VALUES (v_mes, 0.00, NEW.valor_total);
+    END IF;
+END;
+//
 DELIMITER ;
