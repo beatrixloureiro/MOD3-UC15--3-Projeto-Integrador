@@ -10,10 +10,21 @@
 Este software visa facilitar a gestão de condomínios, promovendo uma comunicação eficiente entre moradores, síndicos e administradores. Ele busca automatizar processos como cobranças, gestão de assembleias e solicitações.  
 
 ## Tecnologias Utilizadas 💻  
-- Java  
-- MySQL  
-- Swing (GUI)  
-- JDBC  
+Versão Desktop
+
+    Java: Linguagem de programação principal.
+    MySQL: Banco de dados relacional.
+    Swing: Biblioteca para criação de interfaces gráficas (GUI).
+    JDBC: Conector para integração entre Java e MySQL.
+
+Versão Web
+
+    Java: Linguagem de programação utilizada no backend (com Spring Boot, por exemplo).
+    MySQL: Banco de dados relacional.
+    HTML5: Linguagem de marcação para estruturar o conteúdo das páginas.
+    CSS3: Estilização e design moderno das páginas.
+    JavaScript: Interatividade e dinamismo na interface do usuário.
+    Thymeleaf: Motor de templates para integração do backend Java com o frontend HTML.
 
 ## Descrição 📋
 Este projeto é um sistema informatizado para a gestão de condomínios, desenvolvido em Java com MySQL para persistência de dados. Ele permite funcionalidades como:
